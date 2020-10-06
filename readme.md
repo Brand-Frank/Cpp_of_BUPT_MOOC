@@ -1645,3 +1645,147 @@ p1 = p2 = nullptr;
 
 上述代码第4行若是改为 delete [] p1，会发生什么情况？
 
+#### Passing Objects to Functions (对象作为函数参数)
+
+1. Objects as Function Arguments (对象作为函数参数)
+```
+You can pass objects by value or by reference. (对象作为函数参数，可以按值传递，也可以按引用传递)
+```
+
+(1) `Objects as Function Return Value`(对象作为**函数参数**)
+```cpp
+// Pass by value
+void print( Circle c ) {  //作为函数参数
+  /* … */
+}
+
+int main() {
+  Circle myCircle(5.0);
+  print( myCircle );  //作为函数参数
+  /* … */
+}
+```
+
+(2) `Objects Reference as Function Return Value`(**对象引用**作为**函数参数**)
+```cpp
+void print( Circle& c ) {
+  /* … */
+}
+
+int main() {
+  Circle myCircle(5.0);
+  print( myCircle );
+  /* … */
+}
+```
+
+(3) `Objects Pointer as Function Return Value`(**对象指针**作为**函数参数**)
+```cpp
+// Pass by pointer
+void print( Circle* c ) {
+  /* … */
+}
+
+int main() {
+  Circle myCircle(5.0);
+  print( &myCircle );
+  /* … */
+}
+```
+
+2. `Objects as Function Return Value`(对象作为**函数返回值**)
+```cpp
+// class Object { ... };
+Object f ( /*函数形参*/ ){
+  // Do something
+  return Object(args);
+}
+
+// main() {
+Object o = f ( /*实参*/ );
+
+f( /*实参*/ ).memberFunction();
+``` 
+
+3. Objects Pointer as Function Return Value(对象作为**函数返回值**)
+```cpp 
+// class Object { ... };
+Object* f ( /*函数形参*/ ){
+  Object* o = new Object(args) // 这是“邪恶”的用法，不要这样做
+  // Do something
+  return o;
+}
+
+// main() {
+Object* o = f ( /*实参*/ );
+f( /*实参*/ )->memberFunction();
+// 记得要delete o
+```
+
+允许的用法
+```cpp
+// class Object { ... };
+Object* f ( Object* p, /*其它形参*/ ){
+  // Do something
+  return p;
+}
+
+// main() {
+Object* o = f ( /*实参*/ );
+// 不应该delete o
+``` 
+
+- 实践:
+>尽可能用`const`**修饰函数**返回值**类型**和**参数**,除非你有特别的目的（使用移动语义等）。
+```cpp
+const Object* f(const Object*  p, /* 其它参数 */) { }
+```
+
+4. `Objects Reference as Function Return Value`(对象**引用**作为**函数返回值**)
+```cpp
+// class Object { ... };
+Object& f ( /*函数形参*/ ){
+  Object o {args};
+  // Do something
+  return o;  //这是邪恶的用法
+}
+```
+
+可行的用法1
+```cpp
+// class Object { ... };
+class X {
+  Object o;
+  Object f( /*实参*/ ){
+    // Do something
+    return o;
+  }
+}
+```
+
+可行的用法2
+```cpp
+// class Object { ... };
+Object& f ( Object& p, /*其它形参*/ ){
+  // Do something
+  return p;
+}
+
+// main() {
+auto& o = f ( /*实参*/ );
+f( /*实参*/ ).memberFunction();
+```
+- 实践:
+用`const`修饰引用类型的函数返回值，除非你有特别目的（比如使用移动语义）
+```cpp
+const Object& f( /* args */) { }
+``` 
+
+5. 一些高阶问题
+
+>传值，传址，传指针，传引用都是骗初学者的。C++中有意义的概念是传值和传引用
+
+[Differences between a pointer variable and a reference variable](https://stackoverflow.com/a/57492)
+[Difference between passing by reference vs. passing by value?](https://stackoverflow.com/a/430958)
+
+
