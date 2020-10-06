@@ -10,6 +10,8 @@ class Circle {
         Circle();   /* 函数声明 */
         Circle(double newRadius);
         double getArea();
+        double getRadius() const;
+        void setRadius(double radius);
 };
 
 
