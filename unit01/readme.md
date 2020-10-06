@@ -1587,7 +1587,66 @@ Circle *pCircle2 = new Circle{5.9}; //用有参构造函数创建对象
 
 delete pObject;  //用delete显式销毁
 ```
-#### 对象包括**数据成员**和**函数成员**
+- 对象包括**数据成员**和**函数成员**
 
-#### 
+#### 实例：
+<span style='color:black;background:yellow;font-size:文字大小;font-family:consolas;'>
+1. 创建对象指针，指向对象<br>
+1.1 展示解引用后用dot运算符访问成员<br>
+1.2 展示用箭头访问成员<br>
+2. 动态对象<br>
+2.1 用new创建动态对象<br>
+2.2 用delete删除动态对象<br>
+2.3 将指针置空，用delete删除空指针<br>
+</span>
+
+
+#### Array of Objects (对象数组)
+
+1. `Array of Objects` (对象数组)
+
+(1) 声明方式1
+```cpp
+Circle ca1[10];
+ ```
+
+(2) 声明方式2
+
+> 用匿名对象构成的列表初始化数组
+```cpp
+Circle ca2[3] = { // 注意：不可以写成： auto ca2[3]=     因为声明数组时不能用auto
+       Circle{3}, 
+       Circle{ }, 
+       Circle{5} };  
+```
+
+(3) 声明方式3
+
+> 用C++11列表初始化，列表成员为隐式构造的匿名对象
+
+Circle ca3[3] { 3.1, {}, 5 };
+
+Circle ca4[3] = { 3.1, {}, 5 }; 
+
+ 
+
+(4)     声明方式4
+
+用new在堆区生成对象数组
+
+
+
+auto* p1 = new Circle[3];
+auto p2 = new Circle[3]{ 3.1, {}, 5 };
+delete [] p1;
+delete [] p2;
+p1 = p2 = nullptr;
+
+
+
+
+
+
+
+上述代码第4行若是改为 delete [] p1，会发生什么情况？
 

@@ -1,7 +1,8 @@
 {
     "files.associations": {
         "iostream": "cpp",
-        "initializer_list": "cpp"
+        "initializer_list": "cpp",
+        "ostream": "cpp"
     },
     "fileheader.Author": "codebug",
     "fileheader.LastModifiedBy": "codebug"
