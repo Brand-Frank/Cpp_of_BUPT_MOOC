@@ -2109,7 +2109,7 @@ class Action {
 public:
 
   Action(int hour, int minute, int second) {
-
+    /* 使用了匿名对象 */
     time = Time(hour, minute, second); //time对象应该在构造函数体之前构造完成
 
   }
@@ -2123,6 +2123,67 @@ private:
 Action a(11, 59, 30);
 ```
 
+#### Default Constructor (默认构造函数)
+
+1. `Default Constructor` (默认构造函数)
+ 
+```
+A default constructor is a constructor which can be called with no arguments (either defined with an empty parameter list, or with default arguments provided for every parameter) 
+(默认构造函数是可以无参调用的构造函数，既可以是定义为空参数列表的构造函数，也可以是所有参数都有默认参数值的构造函数)
+```
+
+```cpp
+class Circle1 {
+
+public:
+
+  Circle1() {      // 无参数
+
+    radius = 1.0; /*函数体可为空*/
+
+  }
+
+private:
+
+  double radius;
+
+};
+
+
+class Circle2 {
+
+public:
+
+  Circle2(double r = 1.0) // 所有参数都有默认值
+
+    : radius{ r } {
+
+  }
+
+private:
+
+  double radius;
+
+};
+```
+
+- https://en.cppreference.com/w/cpp/language/default_constructor
+
+2. The Role of Default Constructor (默认构造函数的角色)
+ 
+- `If object type members/embedded objects are not initialized explicitly`(若对象类型成员/内嵌对象成员没有被显式初始化)
+
+```
+(1)     the default constructor of the embedded object is automatically invoked. 
+( 该内嵌对象的无参构造函数会被自动调用)
+
+(2)     If a default constructor of the embedded object does not exist, a compilation error will be reported. 
+( 若内嵌对象没有无参构造函数，则编译器报错)
+```
+
+- `You can use the Constructor Initializer to construct the object manually` (你也可以在初始化列表中手工构造对象)
+
+- 若类的数据域是一个对象类型(且它没有无参构造函数)，则该对象初始化可以放到构造函数初始化列表中
 
 
 
