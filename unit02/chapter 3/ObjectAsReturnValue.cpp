@@ -4,8 +4,6 @@
 
 using namespace std;
 
-
-
 int main()  {
     Circle c {1.0};
 

@@ -735,6 +735,20 @@ int * const y
 **在前先读，在前不变**
  
 `*`（指针）和`const`（常量）谁在前先读谁；`*` 代表被指的数据，名字代表指针地址
+
+> - 常量指针VS常量引用
+>常量指针：指向常量的指针，在指针定义语句的类型前加const，表示指向的对象是常量。
+>定义指向常量的指针只限制指针的间接访问操作，而不能规定指针指向的值本身的操作规定性。
+>常量指针定义"const int* pointer=&a"告诉编译器，*pointer是常量，不能将*pointer作为左值进行操作。
+>常量引用：指向常量的引用，在引用定义语句的类型前加const，表示指向的对象是常量。也跟指针一样不能利用引用对指向的变量进行重新赋值操作。
+> - 指针常量VS引用常量
+>在指针定义语句的指针名前加const，表示指针本身是常量。在定义指针常量时必须初始化！而这是引用天生具来的属性，不用再引用指针定>义语句的引用名前加const。
+>指针常量定义"int* const pointer=&b"告诉编译器，pointer是常量，不能作为左值进行操作，但是允许修改间接访问值，即*pointer可>以修改。
+> - 常量指针常量VS常量引用常量
+>常量指针常量：指向常量的指针常量，可以定义一个指向常量的指针常量，它必须在定义时初始化。常量指针常量定义"const int* const >pointer=&c"告诉编译器，pointer和*pointer都是常量，他们都不能作为左值进行操作。
+>而就不存在所谓的"常量引用常量"，因为跟上面讲的一样引用变量就是引用常量。C++不区分变量的const引用和const变量的引用。程序决不能给引用本身重新赋值，使他指向另一个变量，因此引用总是const的。如果对引用应用关键字const，起作用就是使其目标称为const变量。即没有：Const double const& a=1；只有const double& a=1；
+
+>总结：有一个规则可以很好的区分const是修饰指针，还是修饰指针指向的数据——画一条垂直穿过指针声明的星号（*），如果const出现在线的左边，指针指向的数据为常量；如果const出现在右边，指针本身为常量。而引用本身与天俱来就是常量，即不可以改变指向。
  
 6. const在谁前面谁就不允许改变。
 ```cpp
@@ -1645,11 +1659,13 @@ p1 = p2 = nullptr;
 
 上述代码第4行若是改为 delete [] p1，会发生什么情况？
 
+
 #### Passing Objects to Functions (对象作为函数参数)
 
-1. Objects as Function Arguments (对象作为函数参数)
+1. `Objects as Function Arguments` (对象作为函数参数)
 ```
-You can pass objects by value or by reference. (对象作为函数参数，可以按值传递，也可以按引用传递)
+You can pass objects by value or by reference. 
+(对象作为函数参数，可以按值传递，也可以按引用传递)
 ```
 
 (1) `Objects as Function Return Value`(对象作为**函数参数**)
@@ -1665,6 +1681,7 @@ int main() {
   /* … */
 }
 ```
+其中，先创建一个`myCircle`对象，然后`print`函数调用该对象。
 
 (2) `Objects Reference as Function Return Value`(**对象引用**作为**函数参数**)
 ```cpp
@@ -1678,6 +1695,7 @@ int main() {
   /* … */
 }
 ```
+虽然在调用`print`函数时传入的参数是对象，但是在`print`函数定义中，使用了引用类型。
 
 (3) `Objects Pointer as Function Return Value`(**对象指针**作为**函数参数**)
 ```cpp
@@ -1692,6 +1710,7 @@ int main() {
   /* … */
 }
 ```
+在调用`print`函数时传入的参数是创建的对象的地址，在`print`函数定义中，对`myCircle`对象进行了解引用。
 
 2. `Objects as Function Return Value`(对象作为**函数返回值**)
 ```cpp
@@ -1701,13 +1720,15 @@ Object f ( /*函数形参*/ ){
   return Object(args);
 }
 
+
 // main() {
 Object o = f ( /*实参*/ );
 
 f( /*实参*/ ).memberFunction();
-``` 
+```
+创建了一个函数对象`o` = `f(args)`，可以调用函数对象的属性值。`object`类型的函数定义中返回该对象传入的参数。
 
-3. Objects Pointer as Function Return Value(对象作为**函数返回值**)
+3. `Objects Pointer as Function Return Value`(**对象指针**作为**函数返回值**)
 ```cpp 
 // class Object { ... };
 Object* f ( /*函数形参*/ ){
@@ -1721,8 +1742,10 @@ Object* o = f ( /*实参*/ );
 f( /*实参*/ )->memberFunction();
 // 记得要delete o
 ```
+在该例子中，指针对象`o`在被创建时的生命周期为`f(args)`内部，调用完就会被擦除。
 
-允许的用法
+
+下面是允许的用法
 ```cpp
 // class Object { ... };
 Object* f ( Object* p, /*其它形参*/ ){
@@ -1733,7 +1756,8 @@ Object* f ( Object* p, /*其它形参*/ ){
 // main() {
 Object* o = f ( /*实参*/ );
 // 不应该delete o
-``` 
+```
+操作的是传入的对象指针，因此调用完后仍然能够返回传入的对象指针。
 
 - 实践:
 >尽可能用`const`**修饰函数**返回值**类型**和**参数**,除非你有特别的目的（使用移动语义等）。
@@ -1751,7 +1775,7 @@ Object& f ( /*函数形参*/ ){
 }
 ```
 
-可行的用法1
+可行的用法1：
 ```cpp
 // class Object { ... };
 class X {
@@ -1762,8 +1786,9 @@ class X {
   }
 }
 ```
+`o`的属性会被保留。
 
-可行的用法2
+可行的用法2：
 ```cpp
 // class Object { ... };
 Object& f ( Object& p, /*其它形参*/ ){
@@ -1775,17 +1800,338 @@ Object& f ( Object& p, /*其它形参*/ ){
 auto& o = f ( /*实参*/ );
 f( /*实参*/ ).memberFunction();
 ```
+和指针类似。
 - 实践:
-用`const`修饰引用类型的函数返回值，除非你有特别目的（比如使用移动语义）
+>用`const`修饰引用类型的函数返回值，除非你有特别目的（比如使用移动语义）
 ```cpp
 const Object& f( /* args */) { }
-``` 
+```
 
 5. 一些高阶问题
 
->传值，传址，传指针，传引用都是骗初学者的。C++中有意义的概念是传值和传引用
+>传值，传址，传指针，传引用都是骗初学者的。C++中有意义的概念是传值和传引用。
 
-[Differences between a pointer variable and a reference variable](https://stackoverflow.com/a/57492)
-[Difference between passing by reference vs. passing by value?](https://stackoverflow.com/a/430958)
+<span style='color:black;background:white;font-size:文字大小;font-family:consolas;'>[Differences between a pointer variable and a reference variable](https://stackoverflow.com/a/57492)<br>[Difference between passing by reference vs. passing by value?](https://stackoverflow.com/a/430958)<br>https://blog.csdn.net/listening_music/article/details/6921608<br>
+</span>
+
+>**指针传递参数**本质上是**值传递**的方式，它所传递的是一个地址值。值传递过程中，被调函数的形式参数作为被调函数的局部变量处理，即在栈中开辟了内存空间以存放由主调函数放进来的实参的值，从而成为了实参的一个副本。值传递的特点是被调函数对形式参数的任何操作都是作为局部变量进行，不会影响主调函数的实参变量的值。
+>**引用传递**过程中，被调函数的形式参数也作为局部变量在栈中开辟了内存空间，但是这时存放的是由主调函数放进来的实参变量的地址。被调函数对形参的任何操作都被处理成间接寻址，即通过栈中存放的地址访问主调函数中的实参变量。正因为如此，被调函数对形参做的任何操作都影响了主调函数中的实参变量。
+>引用传递和指针传递是不同的，虽然它们都是在被调函数栈空间上的一个局部变量，但是任何对于引用参数的处理都会通过一个间接寻址的方式操作到主调函数中的相关变量。而对于指针传递的参数，如果改变被调函数中的指针地址，它将影响不到主调函数的相关变量。如果想通过指针参数传递来改变主调函数中的相关变量，那就得使用指向指针的指针，或者指针引用。
+
+
+### chapter 4:对象、封装和this指针
+
+#### Abstraction and Encapsulation (抽象与封装)
+
+1. `Data Field Encapsulation` (数据域封装)
+
+数据域采用public的形式有2个问题
+```
+(1)  First, data may be tampered. ( 数据会被类外的方法篡改)
+
+(2)  Second, it makes the class difficult to maintain and vulnerable to bugs. ( 使得类难于维护，易出现bug)
+```
+例如：
+```cpp
+class Circle {
+
+public:
+
+  double radius;
+
+  //……
+
+};
+
+int main() {
+
+  circle1.radius=5; //类外代码可修改public数据
+}
+```
+
+2. `Accessor and Mutator` (访问器与更改器)
+
+- `To read/write private data, we need get/set function` (为读写私有数据，需要get/set函数)
+```
+(1) get function  is referred to as a getter (获取器，or accessor),
+
+(2) set function is referred to as a setter (设置器，or mutator).
+```
+
+- `Signature of  get function (General form)` (get函数的一般原型)
+
+```cpp
+returnType   getPropertyName()
+```
+
+- `Signature of get function (Bool type)` (布尔型get函数的原型)
+
+```cpp
+bool   isPropertyName()
+```
+
+- `Signature of set function` (set函数的原型)
+
+```cpp
+void  setPropertyName(dataType propertyValue)
+```
+
+
+3. `Class Abstraction and Encapsulation` (类抽象与封装)
+
+- `Class abstraction` (类抽象)
+
+```
+The process of removing physical, spatial, or temporal details or attributes in the study of objects or systems in order to more closely attend to other details of interest 
+(在研究对象或系统时，为了更加专注于感兴趣的细节，去除对象或系统的物理或时空细节/属性的过程叫做抽象)
+```
+
+- `Class encapsulation` (类封装)
+
+```
+A language mechanism for restricting direct access to some of the object's components.
+(一种限制直接访问对象组成部分的语言机制)
+
+A language construct that facilitates the bundling of data with the methods (or other functions) operating on that data.
+( 一种实现数据和函数绑定的语言构造块)
+```
+
+- 总结
+
+>抽象: 提炼目标系统中我们关心的核心要素的过程
+>封装: 绑定数据和函数的语言构造块，以及限制访问目标对象的内容的手段
+
+4. `Example`: `Circle`
+
+- `Abstraction` (圆的抽象)
+
+>实际的圆有大小、颜色；数学上的圆有半径(`radius`)、面积(`area`)等
+>抽象的过程是，将我们的关注的东西提取出来，比如：“给定半径r，求面积”
+
+- `Encapsulation` 
+
+>我们要限制对`radius`的访问， 然后用“`class`”把数据和函数绑定在一起
+
+#### The Scope of Members & "this" pointer (成员作用域与this指针)
+
+1. `The Scope of Data Members in Class` (数据成员的作用域)
+
+```
+The data members are accessible to all constructors and functions in the class. 
+(数据成员可被类内所有函数访问)
+
+Data fields and functions can be declared in any order in a class. 
+(数据域与函数可按任意顺序声明)
+```
+
+2. `Hidden by same name` (同名屏蔽)
+
+- `If a local variable has the same name as a data field` (若成员函数中的局部变量与某数据域同名)
+
+```
+(1) the local variable takes precedence ( 局部变量优先级高：就近原则)
+
+(2) the data field with the same name is hidden. ( 同名数据域在函数中被屏蔽)
+```
+
+- 为避免混淆，不要在类中多次声明同名变量，除了函数参数
+
+3. `The this Pointer` (this指针)
+
+```
+How do you reference a class’s hidden data field in a function?
+(如何在函数内访问类中被屏蔽的数据域)？ 可以使用 this 关键字
+``` 
+
+`This` 关键字的特性
+```
+(1) a special built-in pointer ( 特殊的内建指针)//不需要创建，直接使用。
+
+(2) references to the calling object. ( 引用当前函数的调用对象)
+``` 
+
+4. `Simple way to avoid name hidden` (避免重名屏蔽的简单方法)
+
+```cpp
+class Circle {
+
+public:
+
+  Circle();
+
+  Circle(double radius_)
+
+  {
+
+    //this->radius = radius;
+
+    radius = radius_; 
+
+  }
+
+private:
+
+  double radius;
+
+public:
+
+  void setRadius(double);
+
+  //……
+
+};
+```
+
+5. 编码规范
+ 
+```
+11. If the parameter of a member function has the same name as a private class variable, then the parameter should have underscore suffix.
+
+11. 若类的成员函数参数与私有成员变量名相同，那么参数名应加下划线后缀
+```
+
+例：
+```cpp
+class SomeClass {
+
+  int length;
+
+public:
+
+  void setLength( int length_ );
+```
+
+### chapter 5：C++11类数据成员的初始化 (C++11: Default Member Initializers)
+
+#### 类成员的就地初始化
+
+1. `What is Default Member Initializers` (什么是就地初始化)
+
+```
+In C++03, only static const members of integral types could be initialized in-class
+(在C++03标准中，只有静态常量整型成员才能在类中就地初始化)
+```
+
+**静态**-**常量**-**整型**
+
+```cpp
+class X {
+
+  static const int a = 7;        // ok
+
+  const int b = 7;               // 错误: 非 static
+
+  static int c = 7;              // 错误: 非 const
+
+  static const string d = "odd"; // 错误: 非整型
+
+  // ...
+
+};
+```
+
+```
+C++11 was to allow a non-static data member to be initialized where it is declared in its class
+(C++11标准中，非静态成员可以在它声明的时候初始化)
+```
+
+
+- “就地初始化”的术语的来源有多处:
+
+```
+(1)     就地初始化：《深入理解C++11》
+
+(2)     In-class initializer : https://isocpp.org/
+
+(3)     default member initializer : https://cppreference.com 
+```
+
+2. `Examples and Rules` (例子和规则)
+
+```cpp
+class S { 
+
+  int m = 7; // ok, copy-initializes m  
+
+  int n(7);  // 错误：不允许用小括号初始化  
+
+  std::string s{'a', 'b', 'c'}; // ok, direct list-initializes s
+
+  std::string t{"Constructor run"}; // ok
+
+  int a[] = {1,2,3}; // 错误：数组类型成员不能自动推断大小 
+
+  int b[3] = {1,2,3}; // ok
+
+  // 引用类型的成员有一些额外限制，参考标准
+
+public:
+
+  S() { } 
+
+};
+```
+
+#### Constructor Initializer Lists (构造函数初始化列表)
+
+
+1. `Constructor Initializer` (构造函数初始化)
+
+在构造函数中用初始化列表初始化数据域
+```cpp
+ClassName (parameterList)
+
+  : dataField1{value1}, dataField2{value2}
+
+{
+
+  // Something to do 
+
+}
+```
+ 
+
+2. `Why we need a Constructor Initializer Lists?` (为何需要构造函数初始化列表)
+
+```
+A data field is an object type (Object in Object / Embedded Object)
+(类的数据域是一个对象类型，被称为对象中的对象，或者内嵌对象)
+
+The embedded object must be constructed before the body of ctor is executed
+(内嵌对象必须在被嵌对象的构造函数体执行前就构造完成)
+```
+
+```cpp
+class Time { /* Code omitted */ }
+
+class Action {
+
+public:
+
+  Action(int hour, int minute, int second) {
+
+    time = Time(hour, minute, second); //time对象应该在构造函数体之前构造完成
+
+  }
+
+private:
+
+  Time time;
+
+}; 
+
+Action a(11, 59, 30);
+```
+
+
+
+
+
+
+
+
+
+
+
 
 
