@@ -2,7 +2,7 @@
 /*
  * @Author: codebug
  * @Date: 2020-10-05 16:40:03 
- * @Last Modified by: mikey.zhaopeng
+ * @Last Modified by: codebug
  * @Last Modified time: 2020-10-05 21:30:59
  */
  ```
@@ -2466,6 +2466,132 @@ cout << (s1 >= s2) << endl; // Displays 0
 cout << (s1 <  s2) << endl; // Displays 1 
 cout << (s1 <= s2) << endl; // Displays 1 
 ```
+
+##### C++17中的`string_view`与`string`类有什么差别？
+
+`string`:只要涉及`string`对象赋值操作，`string`内部仍然执行拷贝依然存在,大字符串的赋值操作会触发堆内存分配,堆内存管理是一个高时间成本消耗的操作。
+`string_view`基本**没有涉及内存的额外分配**，它提供一个字符串的视图，即可以通过这个类以各种方法“观测”字符串，但不允许修改字符串。由于它**只读**的特性，它并不真正持有这个字符串的拷贝，而是与相对应的字符串**共享**这一空间。即构造时不发生字符串的复制，`string_view`对象无法被使用它的函数修改。
+
+
+#### `C++11 array Class` C++11的数组类
+
+1. `C-Style Array v.s. C++ Style Array` (C风格数组和C++风格数组)
+
+- `C Style Array` (C++ raw array，也叫做C++原生数组)
+ 
+```cpp
+int arr[ ] = { 1, 2, 3 };
+```
+arr 可能会退化为指针：
+```cpp
+void f(int a[]) { std::cout << sizeof(a)/sizeof(a[0]); }
+```
+
+arr 不知道自己的大小：
+```cpp
+sizeof(arr)/sizeof(arr[0])  ×
+```
+
+两个数组之间无法直接赋值: 
+```cpp
+array1 = array2;  ×
+```
+
+不能自动推导类型：
+```cpp
+auto a1[] = {1,2,3};  ×
+```
+
+- `C++ Style Array`
+
+> 是一个容器类，所以有迭代器（可以认为是一种用于访问成员的高级指针）
+
+可直接赋值
+
+知道自己大小：`size()`
+
+ 能和另一个数组交换内容：`swap()`
+
+ 能以指定值填充自己: `fill()`
+
+ 取某个位置的元素( 做越界检查) ：`at()`
+
+
+2. `Create C++ Style Array` (创建C++风格数组)
+
+C++数组类是一个模板类，可以容纳任何类型的数据
+
+```cpp
+#include <array>
+
+std::array< 数组 类型,  数组大小>   数组名字;
+
+std::array< 数组 类型,  数组大小>   数组 名字 { 值1,  值2, …};
+```
+ 
+
+限制与C风格数组相同
+```cpp
+std::array<int , 10> x;
+
+std::array<char , 5> c{ 'H','e','l','l','o' };
+```
+
+3. `C++17 Type Deduction for std::array` (`std::array`的类型推导)
+ 
+
+> C++17引入了一种新特性，对类模板的参数进行推导 (学完模板才能看懂这句话)
+
+示例：
+```cpp
+std::array a1 {1, 3, 5};            // 推导出  std::array<int, 3>
+
+std::array a2 {'a', 'b', 'c', 'd'};   // 推导出  std::array<char, 4>
+```
+
+4. `std::array`的成员函数
+
+- 元素访问
+
+`at`:访问指定的元素，同时进行越界检查 
+
+`operator[]`:访问指定的元素 
+
+`front`:访问第一个元素 
+
+`back`:访问最后一个元素
+
+`data`:返回指向内存中数组第一个元素的指针 
+
+- 容量
+
+`empty`:检查容器是否为空 
+
+`size`:返回容纳的元素数 
+
+`max_size`:返回可容纳的最大元素数 
+
+- 操作
+
+`fill`:以指定值填充容器 
+
+`swap`:交换内容 
+
+- 迭代器
+
+`beginc` `begin`:返回指向容器第一个元素的迭代器 
+
+`endc` `end`：返回指向容器尾端的迭代器
+
+`rbeginc` `rbegin`：返回指向容器最后元素的逆向迭代器 
+
+`rendc` `rend`：返回指向前端的逆向迭代
+
+
+
+
+
+
 
 
 
