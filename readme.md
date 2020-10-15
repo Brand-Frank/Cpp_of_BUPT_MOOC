@@ -2588,7 +2588,192 @@ std::array a2 {'a', 'b', 'c', 'd'};   // 推导出  std::array<char, 4>
 `rendc` `rend`：返回指向前端的逆向迭代
 
 
+##### 练习题
+```
 
+对于如下代码：
+```cpp
+Circle *pCircle2 = new Circle(5.9);
+```
+释放内存的正确语句是：
+A.
+```cpp
+free(pCircle2);
+```
+B.
+```cpp
+delete Circle(5.9);
+```
+C.
+```cpp
+delete pCircle2;
+```
+D.
+```cpp
+delete pCircle2(5.9);
+```
+正确答案：C你选对了
+2.下面的代码输出结果是什么？
+```cpp
+string s{""};
+s.append("ABCDEFG", 3, 2); 
+cout << s;
+```
+A.BC    B.CD    C.DE    D.EF
+
+正确答案：C你选对了
+
+3.对于如下代码
+```cpp
+Circle circleArray[3] = {
+       Circle(3), 
+       Circle(4)
+};
+```
+没有调用Circle类的哪些构造函数？上述代码的编译环境是 C++11或者C++14。
+注意：在C++17中引入了“复制消除”，会对本题的结果产生重要影响。
+
+```cpp
+A.Circle::Circle(int)
+B.Circle::Circle()
+C.Circle::Circle(Circle &)
+D.Circle::Circle(Circle [])
+```
+正确答案：D你错选为C
+4.以下代码中，第几行有错误？
+```cpp
+class S { 
+
+  int x = 7; 
+
+  int n(7);  
+
+  std::string s{"Hello"};
+
+  int a[] = {1,2,3}; 
+
+  auto b[] = {1,2,3};
+
+public:
+
+  S() { } 
+
+}; 
+```
+A.3,6   B.3,5,6   C.1,5,6   D.4
+
+正确答案：B你错选为A
+解析：  B、就地初始化：
+1. 不允许用小括号初始化
+2. 数组类型成员不能自动推断大小 
+3. 不能用auto
+5多选(3分)
+class Hello 的构造函数的原型可以写为
+
+A.
+Hello() = default;
+
+1.50/3.00
+
+B.
+Hello(int a = 0);
+
+
+C.
+int Hello() = default;
+
+
+D.
+inline int Hello();
+
+正确答案：A、B你错选为A
+解析：  A、这是C++11的默认构造函数声明方式  C、构造函数不能有返回值
+6多选(3分)
+代码
+
+Circle circle1, circle2;
+circle1 = Circle();
+circle2 = Circle(5);
+中的匿名对象有
+A.circle1
+B.circle2
+C.Circle()
+D.Circle(5)
+
+正确答案：C、D你选对了
+7多选(3分)
+对于如下代码
+
+Circle circle1;
+Circle *pCircle = &circle1;
+
+正确访问对象成员函数的方法是
+
+A.circle1.getArea();
+
+该题无法得分/3.00
+
+B.(&circle1)->getArea();
+
+
+C.pCircle.getArea();
+
+该题无法得分/3.00
+D.(&pCircle)->getArea();
+
+正确答案：A、B你错选为A、C
+8多选(3分)
+下面这些代码的功能是创建一个string对象 s，并将其内容设置为字符串 alohaworld ，正确的有：
+
+A.
+string s = string{"alohaworld"};
+该题无法得分/3.00
+
+B.
+string s{'a','l','o','h','a','w','o','r','l','d'};
+该题无法得分/3.00
+
+C.
+char* p = "alohaworld";
+string s(p);
+
+D.
+string s{'alohaworld'};
+
+该题无法得分/3.00
+正确答案：A、B、C你错选为A、B、D
+解析：  B、列表初始化方式
+9判断(1分)
+一般而言，函数里面定义的静态局部变量，在函数运行结束后仍然存在。
+正确答案：A你错选为B
+10判断(1分)
+使用this指针之前，程序员必须先声明this指针。
+A.
+B.
+正确答案：B你没选择任何选项
+解析：this指针是内建的，无需声明
+11判断(1分)
+类的所有对象中的“this”指针都是指向同一个地址的。
+
+A.B.0.00/1.00
+正确答案：A你错选为B
+解析：每个对象的this指针都指向对象自身
+12填空(2分)
+struct中，如果不指明成员的访问控制属性，则默认的访问控制属性是（请填写C++关键字）：
+
+你没有填写答案
+正确答案：public
+13填空(2分)
+下面的代码输出结果是什么？
+
+string s1("HelloWorld");
+string s2("HelloKitty"); 
+cout << (s1 >= s2);
+
+1
+ 2.00/2.00
+正确答案：1
+解析： 输出的是0或者1代表的布尔值，不是输出true或者false
 
 
 
